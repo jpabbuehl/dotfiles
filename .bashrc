@@ -122,6 +122,10 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 export PATH=$PATH:$HOME/.local/bin
+export EDITOR=vim
+export LC_ALL=en_US.UTF-8
+export VISUAL=vim
+export LANG=en_US.UTF-8
 
 # Powerline configuration
 if [ -f $HOME/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerline.sh ]; then
@@ -132,3 +136,12 @@ if [ -f $HOME/.local/lib/python3.8/site-packages/powerline/bindings/bash/powerli
 fi
 
 alias config='/usr/bin/git --git-dir=/home/jp/dotfiles --work-tree=/home/jp'
+alias la='ls -A'
+alias l='ls -CF'
+alias ll='ls -a1F'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias ..='cd ..'
+alias gs='git status'
+alias mv='mv -i'
+alias rm='rm -i'
