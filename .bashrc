@@ -145,3 +145,7 @@ alias ..='cd ..'
 alias gs='git status'
 alias mv='mv -i'
 alias rm='rm -i'
+. /usr/share/autojump/autojump.sh
+. ~/.bash.d/cht.sh
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
