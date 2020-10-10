@@ -26,5 +26,4 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-setxkbmap -option caps:swapescape
 eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)

@@ -147,5 +147,6 @@ alias mv='mv -i'
 alias rm='rm -i'
 . /usr/share/autojump/autojump.sh
 . ~/.bash.d/cht.sh
+setxkbmap -option caps:swapescape
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
