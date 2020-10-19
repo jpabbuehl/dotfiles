@@ -15,6 +15,12 @@ shopt -s nocaseglob
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
 
+shopt -s cmdhist
+shopt -s dirspell 2> /dev/null
+shopt -s globstar 2> /dev/null
+
+type shopt &> /dev/null && shopt -s histappend  # append to history, don't overwrite it
+
 # enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
