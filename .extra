@@ -1,0 +1,11 @@
+#!/bin/bash
+
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+ /usr/share/autojump/autojump.sh
+. ~/.bash.d/cht.sh
+setxkbmap -option caps:swapescape
+
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

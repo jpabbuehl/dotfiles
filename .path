@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PATH="/snap/bin:/home/jp/.pyenv/bin:$PATH"
+export PATH=$PATH:$HOME/.local/bin
