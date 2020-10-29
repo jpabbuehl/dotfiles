@@ -1,6 +1,5 @@
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-
-
+autocmd FileType netrw setl bufhidden=delete
 set nocompatible
 
 " Syntax highlighting {{{
@@ -16,7 +15,7 @@ let mapleader=","
 
 
 " Set some junk {{{
-set autoindent " Copy indent from last line when starting new line
+set autoindent " Copy indent last line when starting new line
 set backspace=indent,eol,start
 set cursorline " Highlight current line
 set diffopt=filler " Add vertical spaces to keep right and left aligned
@@ -52,7 +51,6 @@ set lispwords+=defpartial,defpage " Noir core
 set lispwords+=defaction,deffilter,defview,defsection " Ciste core
 set lispwords+=describe,it " Speclj TDD/BDD
 set magic " Enable extended regexes
-set mouse=a " Enable mouse in all modes
 set modelines=0 " Disable modelines a security precaution
 set nomodeline
 set noerrorbells " Disable error bells
@@ -81,7 +79,7 @@ set switchbuf=""
 set title " Show the filename in the window titlebar
 set ttyfast " Send more characters at a given time
 set ttymouse=xterm " Set mouse type to xterm
-set undofile " Persistent Undo
+set noundofile " Persistent Undo
 set viminfo=%,'9999,s512,n~/.vim/viminfo " Restore buffer list, marks are remembered for 9999 files, registers up to 512Kb are remembered
 set visualbell " Use visual bell instead of audible bell (annnnnoying)
 set wildchar=<TAB> " Character for CLI expansion (TAB-completion)
@@ -93,6 +91,8 @@ set wildmenu " Hitting TAB in command mode will show possible completions above 
 set wildmode=list:longest " Complete only until point of ambiguity
 set winminheight=0 " Allow splits to be reduced to a single line
 set wrapscan " Searches wrap around end of file
+set relativenumber " Show relative line numbers
+set number " Show current line number
 " }}}
 
 
@@ -121,3 +121,5 @@ endif
   " Better mark jumping (line + col) {{{
   nnoremap ' `
   " }}}
+
+nnoremap \\ :noh<return>

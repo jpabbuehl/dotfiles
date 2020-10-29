@@ -4,6 +4,19 @@ case $- in
       *) return;;
 esac
 
+
+# Detect os
+export OS_NAME=""
+case "$OSTYPE" in
+  linux*)   OS_NAME='linux' ;;
+  darwin*)  OS_NAME='macos' ;; 
+  win*)     OS_NAME='windows' ;;
+  bsd*)     OS_NAME='bsd' ;;
+  solaris*) OS_NAME='solaris' ;;
+  *)        echo "unknown OS: $OSTYPE" ;;
+esac
+
+
 # append to the history file, don't overwrite it
 shopt -s histappend
 # update the values of LINES and COLUMNS.
@@ -14,11 +27,16 @@ shopt -s globstar
 shopt -s nocaseglob
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
-
+# Bash save all lines of a multipe-line command in the same history entry
 shopt -s cmdhist
+#    If set, Bash attempts spelling correction on directory names 
+#    during word completion if the directory name initially supplied does not exist.
 shopt -s dirspell 2> /dev/null
+#    If set, the pattern ‘**’ used in a filename expansion context will match a files
+#    and zero or more directories and subdirectories. If the pattern is followed by a ‘/’, only directories and subdirectories match.
 shopt -s globstar 2> /dev/null
 
+# if $(type fzf > /dev/null); then
 type shopt &> /dev/null && shopt -s histappend  # append to history, don't overwrite it
 
 # enable programmable completion features
@@ -45,10 +63,7 @@ fi
 	grep -v "[?*]" | cut -d " " -f2 | \
 	tr ' ' '\n')" scp sftp ssh
 
-# Load other dotfiles
-[ -n "$PS1" ] && source ~/.bash_profile
-
-for file in ~/.{bash_prompt,bash_aliases,functions,path,dockerfunc,exports,extra}; do
+for file in ~/.{bash_prompt,path, bash_aliases,functions,path,dockerfunc,exports,extra}; do
 	if [[ -r "$file" ]] && [[ -f "$file" ]]; then
           echo "loading ${file}"
 		source "$file"
@@ -56,3 +71,8 @@ for file in ~/.{bash_prompt,bash_aliases,functions,path,dockerfunc,exports,extra
 done
 unset file
 
+# Test if MacSO
+which brew > /dev/null 2>&1
+if [[ $? -eq 0 ]]; then
+  [ ! -f `brew --prefix`/etc/bash_completion ] || . `brew --prefix`/etc/bash_completion
+fi

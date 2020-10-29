@@ -5,6 +5,8 @@ export HISTCONTROL=ignoreboth
 
 export HISTSIZE=1000
 export HISTFILESIZE=2000
+export HISTTIMEFORMAT='%F %T '
+export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
 
 
 export EDITOR=vim

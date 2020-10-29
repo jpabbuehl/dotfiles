@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function sshkey() {
+  cat ~/.ssh/id_rsa.pub | pbcopy
+  echo 'public key in clipoard'
+}
+
 function md() {
 	mkdir -p "$@" && cd "$@"
 }
