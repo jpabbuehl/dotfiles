@@ -1,9 +1,12 @@
+#!/bin/bash
+
+echo 'bashrc'
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
-
 
 # Detect os
 export OS_NAME=""
@@ -63,13 +66,14 @@ fi
 	grep -v "[?*]" | cut -d " " -f2 | \
 	tr ' ' '\n')" scp sftp ssh
 
-for file in ~/.{bash_prompt,path, bash_aliases,functions,path,dockerfunc,exports,extra}; do
-	if [[ -r "$file" ]] && [[ -f "$file" ]]; then
-          echo "loading ${file}"
-		source "$file"
-	fi
-done
-unset file
+[ -f "$HOME/.bash_prompt" ] && . "$HOME/.bash_prompt"
+[ -f "$HOME/.path" ] && . "$HOME/.path"
+[ -f "$HOME/.bash_aliases" ] && . "$HOME/.bash_aliases"
+[ -f "$HOME/.functions" ] && . "$HOME/.functions"
+[ -f "$HOME/.path" ] && . "$HOME/.path"
+[ -f "$HOME/.dockerfunc" ] && . "$HOME/.dockerfunc"
+[ -f "$HOME/.exports" ] && . "$HOME/.exports"
+[ -f "$HOME/.extra" ] && . "$HOME/.extra"
 
 # Test if MacSO
 which brew > /dev/null 2>&1
