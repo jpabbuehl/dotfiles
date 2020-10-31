@@ -6,7 +6,7 @@ function config {
 }
 echo ".cfg" >> .gitignore
 mkdir -p .config-backup
-config checkout
+config checkout &> /dev/null
 if [ $? = 0 ]; then
   echo "Checked out config.";
   else

@@ -11,4 +11,4 @@ fi
 [ -f ${HOME}/.bash.d/cht.sh ] && . ${HOME}/.bash.d/cht.sh
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-[ hash setxkbmap ] && echo 'setxkbmap not exist' || setxkbmap -option caps:swapescape
+hash setxkbmap 2>/dev/null && setxkbmap -option caps:swapescape || echo "not esc remapping"

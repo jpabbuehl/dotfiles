@@ -30,6 +30,8 @@ USER $user_name
 WORKDIR /home/$user_name
 RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
 RUN --mount=type=ssh,uid=123 ssh -Tv git@gitlab.com
+ARG caching=123
+ENV caching=${caching}
 RUN --mount=type=ssh,uid=123 git clone --bare git@gitlab.com:jpabbuehl/dotfiles.git .cfg
 COPY --chown=${user_name}:{$group_name} installer_dot.sh installer_dot.sh
 RUN chmod +x installer_dot.sh
