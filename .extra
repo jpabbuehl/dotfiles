@@ -1,11 +1,14 @@
 #!/bin/bash
 
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+echo 'extra'
 
- /usr/share/autojump/autojump.sh
-. ~/.bash.d/cht.sh
-setxkbmap -option caps:swapescape
+if [ hash foo 2>/dev/null ]; then
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi
 
-
+[ -f /usr/share/autojump/autojump.sh ] && . /usr/share/autojump/autojump.sh
+[ -f ${HOME}/.bash.d/cht.sh ] && . ${HOME}/.bash.d/cht.sh
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+setxkbmap -option caps:swapescape

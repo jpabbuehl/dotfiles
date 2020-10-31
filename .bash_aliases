@@ -1,3 +1,7 @@
+#!/bin/bash
+
+echo 'bash_aliases'
+
 
 # improve ls
 hash gls >/dev/null 2>&1 || alias gls="ls"
@@ -18,3 +22,7 @@ alias code='code-insiders'
 
 # Git alias
 alias gs='git status'
+
+# Dotfiles
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
