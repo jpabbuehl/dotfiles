@@ -36,6 +36,9 @@ relies_on(){
 	done
 }
 
+alias dcd='docker-compose down'
+alias dcu='docker-compose up'
+
 alias docker-clean='\
     docker rm -v $(docker ps -a -q -f status=exited);\
     docker rmi $(docker images -f "dangling=true" -q);\
