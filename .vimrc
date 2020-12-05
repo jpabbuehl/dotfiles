@@ -124,5 +124,5 @@ endif
 
 nnoremap \\ :noh<return>
 
-# install pgsql
-# https://github.com/lifepillar/pgsql.vim
+" install pgsql
+" https://github.com/lifepillar/pgsql.vim
