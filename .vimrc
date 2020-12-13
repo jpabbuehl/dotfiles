@@ -123,6 +123,3 @@ endif
   " }}}
 
 nnoremap \\ :noh<return>
-
-# install pgsql
-# https://github.com/lifepillar/pgsql.vim
