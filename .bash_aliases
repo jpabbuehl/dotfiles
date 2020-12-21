@@ -25,4 +25,5 @@ alias gs='git status'
 
 # Dotfiles
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias cs='config status'
 
