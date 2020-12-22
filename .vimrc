@@ -56,8 +56,6 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'jeetsukumaran/vim-indentwise'
 " Better language packs
 Plug 'sheerun/vim-polyglot'
-" Ack code search (requires ack installed in the system)
-Plug 'mileszs/ack.vim'
 " Git integration
 Plug 'tpope/vim-fugitive'
 " Consoles as buffers (neovim has its own consoles as buffers)
@@ -295,18 +293,6 @@ au BufNewFile,BufRead *.js, *.html, *.css
       \ set softtabstop=2 |
       \ set shiftwidth=2
 
-
-" Deoplete -----------------------------
-
-" Use deoplete.
-let g:deoplete#enable_at_startup = 1
-call deoplete#custom#option({
-      \   'ignore_case': v:true,
-      \   'smart_case': v:true,
-      \})
-" complete with words from any opened file
-let g:context_filetype#same_filetypes = {}
-let g:context_filetype#same_filetypes._ = '_'
 
 " Jedi-vim ------------------------------
 
