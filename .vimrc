@@ -1,18 +1,158 @@
+let fancy_symbols_enabled = 0
+let using_neovim = has('nvim')
+let using_vim = !using_neovim
+
+" ============================================================================
+" Vim-plug initialization
+
+let vim_plug_just_installed = 0
+let vim_plug_path = expand('~/.vim/autoload/plug.vim')
+if !filereadable(vim_plug_path)
+  echo "Installing Vim-plug..."
+  echo ""
+  silent !mkdir -p ~/.vim/autoload
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  let vim_plug_just_installed = 1
+endif
+
+" manually load vim-plug the first time
+if vim_plug_just_installed
+  echo "here "
+  :execute 'source '.fnameescape(vim_plug_path)
+endif
+
+" ============================================================================
+" Active plugins
+call plug#begin("~/.vim/plugged")
+
+" Override configs by directory
+Plug 'arielrossanigo/dir-configs-override.vim'
+" Code commenter
+Plug 'scrooloose/nerdcommenter'
+" Class/module browser
+Plug 'majutsushi/tagbar'
+" A couple of nice colorschemes
+Plug 'fisadev/fisa-vim-colorscheme'
+Plug 'patstockwell/vim-monokai-tasty'
+" Airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Pending tasks list
+Plug 'fisadev/FixedTaskList.vim'
+" Async autocompletion
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+" Python autocompletion
+Plug 'deoplete-plugins/deoplete-jedi'
+" Completion from other opened files
+Plug 'Shougo/context_filetype.vim'
+" Just to add the python go-to-definition and similar features, autocompletion
+" from this plugin is disabled
+Plug 'davidhalter/jedi-vim'
+" Automatically close parenthesis, etc
+Plug 'Townk/vim-autoclose'
+" Surround
+Plug 'tpope/vim-surround'
+" Indent text object
+Plug 'michaeljsmith/vim-indent-object'
+" Indentation based movements
+Plug 'jeetsukumaran/vim-indentwise'
+" Better language packs
+Plug 'sheerun/vim-polyglot'
+" Ack code search (requires ack installed in the system)
+Plug 'mileszs/ack.vim'
+" Git integration
+Plug 'tpope/vim-fugitive'
+" Consoles as buffers (neovim has its own consoles as buffers)
+Plug 'rosenfeld/conque-term'
+call plug#end()
+
+" ============================================================================
+" Install plugins the first time vim runs
+
+if vim_plug_just_installed
+  echo "Installing Bundles, please ignore key map error messages"
+  :PlugInstall
+endif
+
+" ============================================================================
+" Set Theme 
+
+let g:vim_monokai_tasty_italic = 1
+let g:lightline = {
+      \ 'colorscheme': 'monokai_tasty',
+      \ }
+let g:airline_theme='monokai_tasty'
+colorscheme vim-monokai-tasty
+
+" ============================================================================
+" Vim settings and mappings
+" You can edit them as you wish
+
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType netrw setl bufhidden=delete
 set nocompatible
+filetype plugin on " for file browsing
+filetype indent on
+set path+=** " provide tab-completion for all file-related tasks
+
+set ls=2 " Show always status bar
+
+" better backup, swap and undos storage for vim (nvim has nice ones by
+" default)
+set directory=~/.vim/dirs/tmp     " directory to place swap files in
+set backup                        " make backup files
+set backupdir=~/.vim/dirs/backups " where to put backup files
+set undofile                      " persistent undos - undo after you re-open the file
+set undodir=~/.vim/dirs/undos
+set viminfo+=n~/.vim/dirs/viminfo
+" create needed directories if they don't exist
+if !isdirectory(&backupdir)
+  call mkdir(&backupdir, "p")
+endif
+if !isdirectory(&directory)
+  call mkdir(&directory, "p")
+endif
+if !isdirectory(&undodir)
+  call mkdir(&undodir, "p")
+endif
+
+" remove ugly vertical lines on window division
+set fillchars+=vert:\ 
+
+" needed so deoplete can auto select the first suggestion
+set completeopt+=noinsert
+
+" clear search results
+nnoremap <silent> // :noh<CR>
+
+" fix problems with uncommon shells (fish, xonsh) and plugins running commands
+" (neomake, ...)
+set shell=/bin/bash 
+
+" Ability to add python breakpoints
+" (I use ipdb, but you can change it to whatever tool you use for debugging)
+au FileType python map <silent> <leader>b Oimport ipdb; ipdb.set_trace()<esc>
+
 
 " Syntax highlighting {{{
 set t_Co=256
 set background=dark
 syntax on
-colorscheme monokai
 " }}}
 
 " Mapleader {{{
 let mapleader=","
 " }}}
 
+" File browsing {{{
+let g:netrw_banner=0 " disable annoying banner
+let g:netrw_browse_split=4 " open in prior window
+let g:netrw_altv=1 " open splits to the right
+let g:netrw_liststyle=3 " tree view
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
 
 " Set some junk {{{
 set autoindent " Copy indent last line when starting new line
@@ -108,20 +248,108 @@ endif
 " }}}
 
 
-  " Get output of shell commands {{{
-  command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
-  " }}}
+" Get output of shell commands {{{
+command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
+" }}}
 
-  " Remap :W to :w {{{
-  command! W write
-  " }}}
+" Remap :W to :w {{{
+command! W write
+" }}}
 
 
-  " Better mark jumping (line + col) {{{
-  nnoremap ' `
-  " }}}
+" Better mark jumping (line + col) {{{
+nnoremap ' `
+" }}}
 
 nnoremap \\ :noh<return>
 
 " install pgsql
 " https://github.com/lifepillar/pgsql.vim
+
+" Snippets
+nnoremap ,html :-1read $HOME/.vim/.skeleton.html<CR>3jwf>a
+
+" Move between splits
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Fold replace za with space bar
+nnoremap <space> za
+
+" clear empty spaces at the end of lines on save of python files
+autocmd BufWritePre *.py :%s/\s\+$//e
+
+
+" Python indentation
+au BufNewFile,BufRead *.py
+      \ set tabstop=4 |
+      \ set softtabstop=4 |
+      \ set shiftwidth=4 |
+      \ set textwidth=79 | 
+      \ set expandtab |
+      \ set autoindent |
+      \ set fileformat=unix
+
+" Webdevelopment indentation
+au BufNewFile,BufRead *.js, *.html, *.css
+      \ set tabstop=2 |
+      \ set softtabstop=2 |
+      \ set shiftwidth=2
+
+
+" Deoplete -----------------------------
+
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
+call deoplete#custom#option({
+      \   'ignore_case': v:true,
+      \   'smart_case': v:true,
+      \})
+" complete with words from any opened file
+let g:context_filetype#same_filetypes = {}
+let g:context_filetype#same_filetypes._ = '_'
+
+" Jedi-vim ------------------------------
+
+" Disable autocompletion (using deoplete instead)
+let g:jedi#completions_enabled = 0
+
+" All these mappings work only for python code:
+" Go to definition
+let g:jedi#goto_command = ',d'
+" Find ocurrences
+let g:jedi#usages_command = ',o'
+" Find assignments
+let g:jedi#goto_assignments_command = ',a'
+" Go to definition in new tab
+nmap ,D :tab split<CR>:call jedi#goto()<CR>
+
+
+" Airline ------------------------------
+
+let g:airline_powerline_fonts = 0
+let g:airline_theme = 'bubblegum'
+let g:airline#extensions#whitespace#enabled = 0
+
+" Fancy Symbols!!
+
+if fancy_symbols_enabled
+  let g:webdevicons_enable = 1
+
+  " custom airline symbols
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline_left_sep = ''
+  let g:airline_left_alt_sep = ''
+  let g:airline_right_sep = ''
+  let g:airline_right_alt_sep = ''
+  let g:airline_symbols.branch = '⭠'
+  let g:airline_symbols.readonly = '⭤'
+  let g:airline_symbols.linenr = '⭡'
+else
+  let g:webdevicons_enable = 0
+endif

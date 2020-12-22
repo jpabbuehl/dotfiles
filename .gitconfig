@@ -1,5 +1,5 @@
 [user]
-	email = jean-paul.abbuehl@accenture.com
+	email = jp.abbuehl@gmail.com
 	name = Jean-Paul Abbuehl
 [core]
 	excludesfile = /Users/jean-paul.abbuehl/.gitignore_global
@@ -13,8 +13,6 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-[gitlab]
-	accesstoken = x8CtNWcXrBGiEXRgSLU9
 [push]
 	default = current
 [color]
