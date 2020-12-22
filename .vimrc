@@ -39,10 +39,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " Pending tasks list
 Plug 'fisadev/FixedTaskList.vim'
-" Async autocompletion
-Plug 'Shougo/deoplete.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
 " Python autocompletion
 Plug 'deoplete-plugins/deoplete-jedi'
 " Completion from other opened files
