@@ -32,7 +32,6 @@ Plug 'scrooloose/nerdcommenter'
 " Class/module browser
 Plug 'majutsushi/tagbar'
 " A couple of nice colorschemes
-Plug 'fisadev/fisa-vim-colorscheme'
 Plug 'patstockwell/vim-monokai-tasty'
 " Airline
 Plug 'vim-airline/vim-airline'
@@ -119,11 +118,10 @@ set fillchars+=vert:\
 set completeopt+=noinsert
 
 " clear search results
-nnoremap <silent> // :noh<CR>
+" nnoremap <silent> // :noh<CR> " Slow search current
 
 " fix problems with uncommon shells (fish, xonsh) and plugins running commands
 " (neomake, ...)
-set shell=/bin/bash 
 
 " Ability to add python breakpoints
 " (I use ipdb, but you can change it to whatever tool you use for debugging)
@@ -197,7 +195,7 @@ set regexpengine=1 " Use the old regular expression engine (it's faster for cert
 set report=0 " Show all changes
 set ruler " Show the cursor position
 set scrolloff=3 " Start scrolling three lines before horizontal border of window
-set shell=/bin/sh " Use /bin/sh for executing shell commands
+set shell=/bin/bash " Use /bin/bash for executing shell commands
 set shiftwidth=2 " The # of spaces for indenting
 set shortmess=atI " Don't show the intro message when starting vim
 set showtabline=2 " Always show tab bar
