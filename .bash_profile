@@ -24,3 +24,4 @@ fi
 
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
