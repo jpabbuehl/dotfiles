@@ -27,3 +27,8 @@ alias gs='git status'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias cs='config status'
 
+# Kubernetes
+alias kubectl='microk8s kubectl'
+# better bash autocompletion
+# sudo snap alias microk8s.kubectl mk
+source <(mk completion bash | sed "s/kubectl/mk/g")
