@@ -19,7 +19,12 @@
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
+set nocompatible
 set history=500
+
+" Python activate environment
+let g:poetv_executables = ['poetry']
+let g:poetv_auto_activate = 1
 
 " Enable filetype plugins
 filetype plugin on
@@ -413,6 +418,12 @@ inoremap $4 {<esc>o}<esc>O
 inoremap $q ''<esc>i
 inoremap $e ""<esc>i
 
+" useful binding when editing json
+inoremap aa <ESC>la
+inoremap <leader>i <ESC>o
+
+" autoclose with line break, useful for json
+inoremap {<CR> {<CR>}<Esc>O
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General abbreviations
@@ -475,7 +486,7 @@ Plug 'Shougo/context_filetype.vim'
 " from this plugin is disabled
 Plug 'davidhalter/jedi-vim'
 " Automatically close parenthesis, etc
-Plug 'Townk/vim-autoclose'
+Plug 'jiangmiao/auto-pairs'
 " Surround
 Plug 'tpope/vim-surround'
 " Indent text object
@@ -498,6 +509,8 @@ Plug 'puremourning/vimspector'
 " Plug 'joshdick/onedark.vim'
 " NERDTree
 Plug 'preservim/nerdtree'
+" Fix python virtualenv conflicting with vim
+Plug 'petobens/poet-v'
 call plug#end()
 
 " ============================================================================
@@ -520,6 +533,9 @@ map <leader>nn :NERDTreeToggle<cr>
 map <leader>nb :NERDTreeFromBookmark<Space>
 map <leader>nf :NERDTreeFind<cr>
 
+" Start NERDTree when Vim is started without file arguments.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-multiple-cursors
@@ -566,10 +582,9 @@ let g:airline_theme='onedark'
 " ============================================================================
 " Vim settings and mappings
 " You can edit them as you wish
-
+autocmd Filetype json setlocal ts=2 sw=2 expandtab
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType netrw setl bufhidden=delete
-set nocompatible
 set path+=** " provide tab-completion for all file-related tasks
 
 set ls=2 " Show always status bar
@@ -588,7 +603,6 @@ set completeopt+=noinsert
 
 " Ability to add python breakpoints
 " (I use ipdb, but you can change it to whatever tool you use for debugging)
-au FileType python map <silent> <leader>b Oimport ipdb; ipdb.set_trace()<esc>
 
 " File browsing {{{
 let g:netrw_banner=0 " disable annoying banner
@@ -657,11 +671,12 @@ set number " Show current line number
 
 " FastEscape {{{
 " Speed up transition from modes
+" Fine tune timeout len https://stackoverflow.com/questions/26829086/key-specific-timeoutlen-in-vim
 if ! has('gui_running')
   set ttimeoutlen=10
   augroup FastEscape
     autocmd!
-    au InsertEnter * set timeoutlen=0
+    au InsertEnter * set timeoutlen=200
     au InsertLeave * set timeoutlen=1000
   augroup END
 endif
@@ -695,6 +710,7 @@ nnoremap <C-H> <C-W><C-H>
 
 " clear empty spaces at the end of lines on save of python files
 autocmd BufWritePre *.py :%s/\s\+$//e
+
 
 " Python indentation
 au BufNewFile,BufRead *.py
@@ -777,6 +793,9 @@ au FileType python map <buffer> <leader>2 /def
 au FileType python map <buffer> <leader>C ?class
 au FileType python map <buffer> <leader>D ?def
 
+let g:vimspector_enable_mappings = 'HUMAN'
+let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-go', 'vscode-bash-debug' ]
+au FileType python map <F2> :w<CR>:!python %<CR>
 
 """"""""""""""""""""""""""""""
 " => JavaScript section
@@ -805,3 +824,9 @@ endfunction
 let g:lightline = {
   \ 'colorscheme': 'onedark',
   \ }
+
+
+""""""""""
+"Execute bash script
+""""""""""
+nmap <F2> :exec '!'.getline('.')
