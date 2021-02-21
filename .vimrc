@@ -19,6 +19,9 @@
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
+
+" Reinstall pluging (1 for yes, 0 for no)
+let vim_plug_just_installed = 1
 set nocompatible
 set history=500
 
@@ -364,7 +367,6 @@ let using_neovim = has('nvim')
 let using_vim = !using_neovim
 
 
-let vim_plug_just_installed = 0
 let vim_plug_path = expand('~/.vim/autoload/plug.vim')
 if !filereadable(vim_plug_path)
   echo "Installing Vim-plug..."
@@ -378,6 +380,7 @@ endif
 if vim_plug_just_installed
   :execute 'source '.fnameescape(vim_plug_path)
 endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GUI related
@@ -465,8 +468,6 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 " Active plugins
 call plug#begin("~/.vim/plugged")
 
-" Override configs by directory
-Plug 'arielrossanigo/dir-configs-override.vim'
 " Code commenter
 Plug 'scrooloose/nerdcommenter'
 " Class/module browser
@@ -479,12 +480,9 @@ Plug 'vim-airline/vim-airline-themes'
 " Pending tasks list
 Plug 'fisadev/FixedTaskList.vim'
 " Python autocompletion
-Plug 'deoplete-plugins/deoplete-jedi'
+Plug 'davidhalter/jedi-vim'
 " Completion from other opened files
 Plug 'Shougo/context_filetype.vim'
-" Just to add the python go-to-definition and similar features, autocompletion
-" from this plugin is disabled
-Plug 'davidhalter/jedi-vim'
 " Automatically close parenthesis, etc
 Plug 'jiangmiao/auto-pairs'
 " Surround
@@ -511,6 +509,8 @@ Plug 'puremourning/vimspector'
 Plug 'preservim/nerdtree'
 " Fix python virtualenv conflicting with vim
 Plug 'petobens/poet-v'
+" Add indent visualization
+Plug 'Yggdroot/indentLine' 
 call plug#end()
 
 " ============================================================================
@@ -585,6 +585,7 @@ let g:airline_theme='onedark'
 autocmd Filetype json setlocal ts=2 sw=2 expandtab
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType netrw setl bufhidden=delete
+let g:indentLine_char = '⦙'
 set path+=** " provide tab-completion for all file-related tasks
 
 set ls=2 " Show always status bar
@@ -734,7 +735,11 @@ au BufNewFile,BufRead *.js, *.html, *.css
 " Jedi-vim ------------------------------
 
 " Disable autocompletion (using deoplete instead)
-let g:jedi#completions_enabled = 0
+let g:jedi#auto_initialization = 1
+let g:jedi#completions_enabled = 1
+let g:jedi#use_tabs_not_buffers = 1
+let g:jedi#popup_select_first = 0
+let g:jedi#popup_on_dot = 0
 
 " All these mappings work only for python code:
 " Go to definition
@@ -830,3 +835,19 @@ let g:lightline = {
 "Execute bash script
 """"""""""
 nmap <F2> :exec '!'.getline('.')
+
+""""""""
+" Yaml
+"""""""""
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_text_changed = 'never'
+
+
+""""""
+" Typescript
+"""""""
+
+set re=0
+

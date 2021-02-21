@@ -32,3 +32,5 @@ alias kubectl='microk8s kubectl'
 # better bash autocompletion
 # sudo snap alias microk8s.kubectl mk
 source <(mk completion bash | sed "s/kubectl/mk/g")
+
+alias awslocal='aws --endpoint-url=http://localhost:4566'
