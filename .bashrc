@@ -12,7 +12,7 @@ esac
 export OS_NAME=""
 case "$OSTYPE" in
   linux*)   OS_NAME='linux' ;;
-  darwin*)  OS_NAME='macos' ;; 
+  darwin*)  OS_NAME='macos' ;;
   win*)     OS_NAME='windows' ;;
   bsd*)     OS_NAME='bsd' ;;
   solaris*) OS_NAME='solaris' ;;
@@ -32,7 +32,7 @@ shopt -s nocaseglob
 shopt -s cdspell
 # Bash save all lines of a multipe-line command in the same history entry
 shopt -s cmdhist
-#    If set, Bash attempts spelling correction on directory names 
+#    If set, Bash attempts spelling correction on directory names
 #    during word completion if the directory name initially supplied does not exist.
 shopt -s dirspell 2> /dev/null
 #    If set, the pattern ‘**’ used in a filename expansion context will match a files
@@ -80,3 +80,24 @@ which brew > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then
   [ ! -f `brew --prefix`/etc/bash_completion ] || . `brew --prefix`/etc/bash_completion
 fi
+complete -C /usr/local/bin/bit bit
+source <(kubectl completion bash)
+eval "$(pyenv init -)"
+export PATH="~/anaconda3/bin":$PATH
+. "$HOME/.cargo/env"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/jp/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/jp/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/jp/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/jp/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

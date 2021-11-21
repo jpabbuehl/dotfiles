@@ -27,10 +27,11 @@ alias gs='git status'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias cs='config status'
 
-# Kubernetes
-alias kubectl='microk8s kubectl'
-# better bash autocompletion
-# sudo snap alias microk8s.kubectl mk
-source <(mk completion bash | sed "s/kubectl/mk/g")
+# k3s
+export KUBECONFIG=~/.kube/k3s-config
+alias k=kubectl
+complete -F __start_kubectl k
 
 alias awslocal='aws --endpoint-url=http://localhost:4566'
+alias t='todo.sh'
+alias dcl='docker container ls'
