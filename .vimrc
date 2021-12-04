@@ -19,6 +19,9 @@
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
+
+" Reinstall pluging (1 for yes, 0 for no)
+let vim_plug_just_installed = 0
 set nocompatible
 set history=500
 
@@ -41,7 +44,7 @@ let mapleader = ","
 " Fast saving
 nmap <leader>w :w!<cr>
 
-" :W sudo saves the file 
+" :W sudo saves the file
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
@@ -55,7 +58,8 @@ set so=7
 " Turn on the Wild menu, Hitting TAB in command mode will show possible completions above command line
 set wildmenu
 set wildchar=<TAB> " Character for CLI expansion (TAB-completion)
-set wildmode=list:longest " Complete only until point of ambiguity
+set wildignorecase
+set wildmode=list:longest,full " Complete only until point of ambiguity
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -189,7 +193,6 @@ set wrapscan " Searches wrap around end of file
 " => Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
@@ -223,8 +226,8 @@ map <leader>h :bprevious<cr>
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove 
-map <leader>t<leader> :tabnext 
+map <leader>tm :tabmove
+map <leader>t<leader> :tabnext
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
@@ -238,7 +241,7 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
@@ -364,7 +367,6 @@ let using_neovim = has('nvim')
 let using_vim = !using_neovim
 
 
-let vim_plug_just_installed = 0
 let vim_plug_path = expand('~/.vim/autoload/plug.vim')
 if !filereadable(vim_plug_path)
   echo "Installing Vim-plug..."
@@ -378,6 +380,7 @@ endif
 if vim_plug_just_installed
   :execute 'source '.fnameescape(vim_plug_path)
 endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GUI related
@@ -443,7 +446,7 @@ endif
 vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
 
 " Open Ack and put the cursor in the right position
-map <leader>g :Ack 
+map <leader>g :Ack
 
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
@@ -465,8 +468,6 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 " Active plugins
 call plug#begin("~/.vim/plugged")
 
-" Override configs by directory
-Plug 'arielrossanigo/dir-configs-override.vim'
 " Code commenter
 Plug 'scrooloose/nerdcommenter'
 " Class/module browser
@@ -479,12 +480,9 @@ Plug 'vim-airline/vim-airline-themes'
 " Pending tasks list
 Plug 'fisadev/FixedTaskList.vim'
 " Python autocompletion
-Plug 'deoplete-plugins/deoplete-jedi'
+Plug 'davidhalter/jedi-vim'
 " Completion from other opened files
 Plug 'Shougo/context_filetype.vim'
-" Just to add the python go-to-definition and similar features, autocompletion
-" from this plugin is disabled
-Plug 'davidhalter/jedi-vim'
 " Automatically close parenthesis, etc
 Plug 'jiangmiao/auto-pairs'
 " Surround
@@ -505,12 +503,30 @@ Plug 'dense-analysis/ale'
 Plug 'tpope/vim-commentary'
 " Interactive debugger
 Plug 'puremourning/vimspector'
+
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+
 " Color theme not sure since this is in git
-" Plug 'joshdick/onedark.vim'
+Plug 'joshdick/onedark.vim'
 " NERDTree
 Plug 'preservim/nerdtree'
 " Fix python virtualenv conflicting with vim
 Plug 'petobens/poet-v'
+" Add indent visualization
+Plug 'Yggdroot/indentLine'
+
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'jparise/vim-graphql'
+
+" Typescript support
+Plug 'HerringtonDarkholme/yats.vim'
+
+
 call plug#end()
 
 " ============================================================================
@@ -556,11 +572,17 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " => Ale (syntax checker and linter)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_linters = {
-\   'javascript': ['jshint'],
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
 \   'python': ['flake8'],
 \   'go': ['go', 'golint', 'errcheck'],
 \   'sh': ['ShellCheck']
 \}
+
+let g:ale_fix_on_save = 1
+
+nnoremap ]r :ALENextWrap<CR>     " move to the next ALE warning / error
+nnoremap [r :ALEPreviousWrap<CR> " move to the previous ALE warning / error
 
 nmap <silent> <leader>a <Plug>(ale_next_wrap)
 
@@ -569,12 +591,25 @@ let g:ale_set_highlights = 1
 
 " Only run linting when saving the file
 " let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 1
 let g:airline#extensions#ale#enabled = 1
 
+" Only run linting when saving the file
+"" "let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 1
+
+" automatic imports from external modules
+let g:ale_completion_autoimport = 1
+
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_open_list = 1
+let g:ale_keep_list_window_open = 1
 
 " ============================================================================
-" Set Theme 
+" Set Theme
 
 let g:vim_monokai_tasty_italic = 1
 let g:lightline = {
@@ -588,6 +623,7 @@ let g:airline_theme='onedark'
 autocmd Filetype json setlocal ts=2 sw=2 expandtab
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType netrw setl bufhidden=delete
+let g:indentLine_char = '⦙'
 set path+=** " provide tab-completion for all file-related tasks
 
 set ls=2 " Show always status bar
@@ -595,7 +631,7 @@ set ls=2 " Show always status bar
 " default)
 
 " remove ugly vertical lines on window division
-set fillchars+=vert:\ 
+set fillchars+=vert:\
 
 " needed so deoplete can auto select the first suggestion
 set completeopt+=noinsert
@@ -720,7 +756,7 @@ au BufNewFile,BufRead *.py
       \ set tabstop=4 |
       \ set softtabstop=4 |
       \ set shiftwidth=4 |
-      \ set textwidth=79 | 
+      \ set textwidth=79 |
       \ set expandtab |
       \ set autoindent |
       \ set fileformat=unix
@@ -728,16 +764,26 @@ au BufNewFile,BufRead *.py
 let python_highlight_all = 1
 
 " Webdevelopment indentation
-au BufNewFile,BufRead *.js, *.html, *.css
+au BufNewFile,BufRead *.js,*.html,*.css
       \ set tabstop=2 |
       \ set softtabstop=2 |
       \ set shiftwidth=2
 
+" Deoplete -----------------------------
+let g:deoplete#enable_at_startup = 1
+
+call deoplete#custom#option('sources', {
+\ '_': ['ale', 'foobar'],
+\})
 
 " Jedi-vim ------------------------------
 
 " Disable autocompletion (using deoplete instead)
+let g:jedi#auto_initialization = 0
 let g:jedi#completions_enabled = 0
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#popup_select_first = 0
+let g:jedi#popup_on_dot = 0
 
 " All these mappings work only for python code:
 " Go to definition
@@ -838,3 +884,71 @@ let g:lightline = {
 
 " execute current line
 nmap <F2> :exec '!'.getline('.')
+
+"" Currently return outputs to file
+vnoremap <F2> :<C-U>'>put =system(join(getline('''<','''>'),\"\n\").\"\n\")
+
+""""""""
+" Yaml
+"""""""""
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_text_changed = 'never'
+
+
+""""""
+" Typescript
+"""""""
+
+set re=0
+if executable('prettier')
+  autocmd FileType javascript setlocal formatprg=prettier\ --stdin\ --parser\ flow
+  autocmd FileType typescript,typescript.tsx setlocal formatprg=prettier\ --stdin\ --parser\ typescript
+  autocmd FileType json setlocal formatprg=prettier\ --stdin\ --parser\ json
+
+  autocmd FileType css,less setlocal formatprg=prettier\ --parser\ css
+  autocmd FileType html setlocal formatprg=prettier\ --parser\ html
+
+  autocmd FileType markdown setlocal formatprg=prettier\ --parser\ markdown
+  autocmd FileType yaml setlocal formatprg=prettier\ --parser\ yaml
+endif
+" command is gggqG to autoformat
+
+
+""""
+" Formatter
+"""""
+"
+nmap <silent> <leader>aj :ALENext<cr>
+nmap <silent> <leader>ak :ALEPrevious<cr>
+
+autocmd FileType javascript map <buffer> <c-]> :ALEGoToDefinition<CR>
+autocmd FileType typescript map <buffer> <c-]> :ALEGoToDefinition<CR>
+autocmd FileType typescriptreact map <buffer> <c-]> :ALEGoToDefinition<CR>
+nnoremap K :ALEHover<CR>
+nnoremap <leader>qf :ALECodeAction<CR>
+vnoremap <leader>qf :ALECodeAction<CR>
+let js_fixers = ['eslint']
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': js_fixers,
+\   'javascript.jsx': js_fixers,
+\   'typescript': js_fixers,
+\   'typescriptreact': js_fixers,
+\   'css': ['prettier'],
+\   'json': ['prettier'],
+\}
+
+let g:ale_sign_error = "🐛"
+let g:ale_sign_warning = "⚠️"
+let g:ale_sign_info = "ℹ"
+
+
+""""
+" quickfix shortcut
+"""""
+
+map <C-j> :cn<CR>
+map <C-k> :cp<CR>

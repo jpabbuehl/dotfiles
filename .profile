@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
 # ~/.profile: executed by the command interpreter for login shells.
 # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
 # exists.
@@ -29,3 +32,7 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 
 eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
+export PATH="$HOME/.poetry/bin:$PATH"
+eval "$(pyenv init --path)"
+. "$HOME/.cargo/env"
