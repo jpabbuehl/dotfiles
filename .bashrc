@@ -75,8 +75,17 @@ fi
 [ -f "$HOME/.exports" ] && . "$HOME/.exports"
 [ -f "$HOME/.extra" ] && . "$HOME/.extra"
 
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+
 # Test if MacSO
 which brew > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then
   [ ! -f `brew --prefix`/etc/bash_completion ] || . `brew --prefix`/etc/bash_completion
 fi
+
+
+unset PROMPT_COMMAND 
+

@@ -558,17 +558,20 @@ let g:multi_cursor_quit_key            = '<Esc>'
 let g:ale_linters = {
 \   'javascript': ['jshint'],
 \   'python': ['flake8'],
-\   'go': ['go', 'golint', 'errcheck']
+\   'go': ['go', 'golint', 'errcheck'],
+\   'sh': ['ShellCheck']
 \}
 
 nmap <silent> <leader>a <Plug>(ale_next_wrap)
 
 " Disabling highlighting
-let g:ale_set_highlights = 0
+let g:ale_set_highlights = 1
 
 " Only run linting when saving the file
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
+" let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 1
+let g:airline#extensions#ale#enabled = 1
+
 
 " ============================================================================
 " Set Theme 
@@ -827,6 +830,11 @@ let g:lightline = {
 
 
 """"""""""
-"Execute bash script
+" => Bash section
 """"""""""
+
+" lint bash script
+
+
+" execute current line
 nmap <F2> :exec '!'.getline('.')

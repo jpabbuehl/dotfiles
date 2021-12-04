@@ -61,3 +61,7 @@ ubuntu_test(){
 debian_test(){
   exec docker run --rm -it -t debian:10.3 bash
 }
+
+docker.volume.rm.none(){
+  docker rmi -f $(docker images | grep "^<none>" | awk '{print $3}') # remove all <none> images
+}

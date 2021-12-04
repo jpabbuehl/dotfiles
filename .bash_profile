@@ -22,6 +22,7 @@ if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
 fi
 
-
+eval "$(pyenv init -)"
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+#eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+eval "$(pyenv init --path)"
