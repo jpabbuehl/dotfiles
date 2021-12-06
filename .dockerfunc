@@ -64,6 +64,7 @@ debian_test(){
 
 docker.volume.rm.none(){
   docker rmi -f $(docker images | grep "^<none>" | awk '{print $3}') # remove all <none> images
+}
 
 jq_find(){
   exec jp -c 'paths | select(.[-1] == "$1")'

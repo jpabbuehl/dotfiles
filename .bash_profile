@@ -24,10 +24,15 @@ fi
 
 eval "$(pyenv init -)"
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+if [ -f $HOME/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
  eval "$(pyenv init -)"
 fi
-. "$HOME/.cargo/env"
+
+if [ -f $HOME/.cargo/env ]; then
+  . "$HOME/.cargo/env"
+fi

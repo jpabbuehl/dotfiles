@@ -93,7 +93,9 @@ complete -C /usr/local/bin/bit bit
 source <(kubectl completion bash)
 eval "$(pyenv init -)"
 export PATH="~/anaconda3/bin":$PATH
-. "$HOME/.cargo/env"
+if [ -f $HOME/.cargo/env ]; then
+  . "$HOME/.cargo/env"
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

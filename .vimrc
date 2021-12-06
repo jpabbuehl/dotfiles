@@ -772,10 +772,6 @@ au BufNewFile,BufRead *.js,*.html,*.css
 " Deoplete -----------------------------
 let g:deoplete#enable_at_startup = 1
 
-call deoplete#custom#option('sources', {
-\ '_': ['ale', 'foobar'],
-\})
-
 " Jedi-vim ------------------------------
 
 " Disable autocompletion (using deoplete instead)

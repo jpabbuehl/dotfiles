@@ -33,7 +33,6 @@ alias cs='config status'
 # sudo snap alias microk8s.kubectl mk
 # source <(mk completion bash | sed "s/kubectl/mk/g")
 alias awslocal='aws --endpoint-url http://localhost:4566 --profile test --region eu-central-1'
-=======
 # k3s
 export KUBECONFIG=~/.kube/k3s-config
 alias k=kubectl
