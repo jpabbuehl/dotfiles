@@ -1,4 +1,6 @@
 #!/bin/bash
+set -o pipefail
+set -e
 
 [[ -d $HOME/.cfg ]] && echo 'already exist, skipped' || git clone --bare git@github.com:jpabbuehl/dotfiles.git $HOME/.cfg
 function config {
