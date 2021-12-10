@@ -1,0 +1,13 @@
+name: test dotfile installer
+on: push
+
+jobs:
+  install-dotfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: test installer
+        run: |
+          set -e
+          export CI=1
+          bash utils/installer_dot.sh
