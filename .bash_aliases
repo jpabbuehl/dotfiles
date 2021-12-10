@@ -41,3 +41,4 @@ complete -F __start_kubectl k
 alias awslocal='aws --endpoint-url=http://localhost:4566'
 alias t='todo.sh'
 alias dcl='docker container ls'
+alias yank='yank-cli'
