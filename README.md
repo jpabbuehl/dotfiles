@@ -15,7 +15,7 @@ git push
 ```
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 echo ".cfg" >> .gitignore
-git clone --bare git@gitlab.com:jpabbuehl/dotfiles.git $HOME/.cfg
+git clone --bare git@github.com:jpabbuehl/dotfiles.git $HOME/.cfg
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # in case there are already dotfiles, this will create merge conflicts.
