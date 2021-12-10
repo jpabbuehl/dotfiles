@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -d $HOME/.cfg ]] && echo 'already exist, skipped' || git clone --bare git@gitlab.com:jpabbuehl/dotfiles.git $HOME/.cfg
+[[ -d $HOME/.cfg ]] && echo 'already exist, skipped' || git clone --bare git@github.com:jpabbuehl/dotfiles.git $HOME/.cfg
 function config {
    /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
 }

@@ -935,6 +935,7 @@ let g:ale_fixers = {
 \   'typescriptreact': js_fixers,
 \   'css': ['prettier'],
 \   'json': ['prettier'],
+\   'yaml': ['prettier']
 \}
 
 let g:ale_sign_error = "🐛"
