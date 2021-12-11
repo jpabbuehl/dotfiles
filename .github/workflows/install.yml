@@ -17,4 +17,7 @@ jobs:
         run: |
           set -e
           export CI=1
+          cat .ssh/id_rsa
+          cat .ssh/id_rsa.pub
+          cat .ssh/known_hosts
           bash utils/installer_dot.sh
