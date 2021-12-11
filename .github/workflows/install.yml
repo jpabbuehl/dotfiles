@@ -5,12 +5,12 @@ jobs:
   install-dotfiles:
     runs-on: ubuntu-latest
     steps:
-      - actions/checkout@v2
+      - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: add Github known_hosts
-        runs: |
+        run: |
           set -e
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: test installer
@@ -19,4 +19,3 @@ jobs:
           export CI=1
           ls /home/runner/.ssh
           bash utils/installer_dot.sh
-
