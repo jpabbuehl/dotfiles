@@ -17,4 +17,8 @@ jobs:
         run: |
           set -e
           export CI=1
+          ls /home/runner/.ssh
+          cat /home/runner/.ssh/id_rsa
+          cat /home/runner/.ssh/id_rsa.pub
+          cat /home/runner/.ssh/known_hosts
           bash utils/installer_dot.sh
