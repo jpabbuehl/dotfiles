@@ -15,6 +15,4 @@ jobs:
           if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
       - name: test installer
         run: |
-          set -e
-          export CI=1
           bash utils/installer_dot.sh
