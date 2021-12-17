@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo 'bashrc'
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -86,28 +84,14 @@ if [[ $? -eq 0 ]]; then
   [ ! -f `brew --prefix`/etc/bash_completion ] || . `brew --prefix`/etc/bash_completion
 fi
 
-
 unset PROMPT_COMMAND 
 
 complete -C /usr/local/bin/bit bit
 source <(kubectl completion bash)
-eval "$(pyenv init -)"
 export PATH="~/anaconda3/bin":$PATH
 if [ -f $HOME/.cargo/env ]; then
   . "$HOME/.cargo/env"
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/jp/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/jp/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/jp/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/jp/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# Add powerline
+source /usr/share/powerline/bindings/bash/powerline.sh

@@ -34,5 +34,4 @@ fi
 eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
 export PATH="$HOME/.poetry/bin:$PATH"
-eval "$(pyenv init --path)"
 . "$HOME/.cargo/env"

@@ -22,7 +22,6 @@ if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
 fi
 
-eval "$(pyenv init -)"
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 if [ -f $HOME/linuxbrew/.linuxbrew/bin/brew ]; then
   eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
@@ -30,7 +29,8 @@ fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
- eval "$(pyenv init -)"
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
 fi
 
 if [ -f $HOME/.cargo/env ]; then

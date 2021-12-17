@@ -125,7 +125,6 @@ if $COLORTERM == 'gnome-terminal'
 endif
 
 syntax on
-colorscheme onedark
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -479,8 +478,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " Pending tasks list
 Plug 'fisadev/FixedTaskList.vim'
-" Python autocompletion
-Plug 'davidhalter/jedi-vim'
 " Completion from other opened files
 Plug 'Shougo/context_filetype.vim'
 " Automatically close parenthesis, etc
@@ -503,17 +500,8 @@ Plug 'dense-analysis/ale'
 Plug 'tpope/vim-commentary'
 " Interactive debugger
 Plug 'puremourning/vimspector'
-
-Plug 'Shougo/deoplete.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
-
-" Color theme not sure since this is in git
-Plug 'joshdick/onedark.vim'
 " NERDTree
 Plug 'preservim/nerdtree'
-" Fix python virtualenv conflicting with vim
-Plug 'petobens/poet-v'
 " Add indent visualization
 Plug 'Yggdroot/indentLine'
 
@@ -523,11 +511,17 @@ Plug 'peitalin/vim-jsx-typescript'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'jparise/vim-graphql'
 
+Plug 'NLKNguyen/papercolor-theme'
+
 " Typescript support
 Plug 'HerringtonDarkholme/yats.vim'
 
 
 call plug#end()
+
+set background=dark
+colorscheme PaperColor
+
 
 " ============================================================================
 " Install plugins the first time vim runs
@@ -632,10 +626,6 @@ set ls=2 " Show always status bar
 
 " remove ugly vertical lines on window division
 set fillchars+=vert:\
-
-" needed so deoplete can auto select the first suggestion
-set completeopt+=noinsert
-
 
 " fix problems with uncommon shells (fish, xonsh) and plugins running commands
 " (neomake, ...)
