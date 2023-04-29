@@ -42,3 +42,10 @@ alias awslocal='aws --endpoint-url=http://localhost:4566'
 alias t='todo.sh'
 alias dcl='docker container ls'
 alias yank='yank-cli'
+
+
+k_ns_clean () {
+  kubectl get namespace $1 -o json \
+  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
+  | kubectl replace --raw /api/v1/namespaces/$1/finalize -f -
+}
