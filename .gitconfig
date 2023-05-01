@@ -3,6 +3,7 @@
         name = Jean-Paul Abbuehl
 [core]
         excludesfile = /Users/jean-paul.abbuehl/.gitignore_global
+	editor = vim
 [credential]
         helper = store
 [alias]
@@ -14,7 +15,7 @@
         smudge = git-lfs smudge -- %f
         process = git-lfs filter-process
 [push]
-        default = current
+	default = current
 [color]
         ui = true
 [diff]
