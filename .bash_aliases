@@ -8,7 +8,7 @@ hash gls >/dev/null 2>&1 || alias gls="ls"
 if gls --color > /dev/null 2>&1; then colorflag="--color"; else colorflag="-G"; fi;
 export CLICOLOR_FORCE=1
 
-alias ls='gls -AFh ${colorflag} --group-directories-first'
+#alias ls='gls -AFh ${colorflag} --group-directories-first'
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection clipboard -o'
 alias config='/usr/bin/git --git-dir=/home/jp/dotfiles --work-tree=/home/jp'
@@ -34,8 +34,12 @@ alias cs='config status'
 # source <(mk completion bash | sed "s/kubectl/mk/g")
 alias awslocal='aws --endpoint-url http://localhost:4566 --profile test --region eu-central-1'
 # k3s
-export KUBECONFIG=~/.kube/k3s-config
+export KUBECONFIG=~/.kube/config
 alias k=kubectl
+alias kn='kubectl config set-context --current --namespace'
+
+
+export CR_PAT=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
 complete -F __start_kubectl k
 
 alias awslocal='aws --endpoint-url=http://localhost:4566'
@@ -44,6 +48,7 @@ alias dcl='docker container ls'
 alias yank='yank-cli'
 
 
+export DOMAIN='homelab.com'
 k_ns_clean () {
   kubectl get namespace $1 -o json \
   | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \

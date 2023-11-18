@@ -17,6 +17,8 @@ fi;
 [ -f /usr/share/bash-completion/completions/git ] && . /usr/share/bash-completion/completions/git
 # or source /etc/bash_completion.d/git
 
+command -v timoni >/dev/null && . <(timoni completion bash)
+
 # Enable git branch name completion if file exists
 if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash

@@ -5,3 +5,5 @@
 [[ -d $HOME/.pyenv/shims ]] && export PATH=$PATH:$HOME/.pyenv/shims
 [[ -d $HOME/.pyenv/bin ]] && export PATH=$PATH:$HOME/.pyenv/bin
 [[ -d $HOME/.local/bin ]] && export PATH=$PATH:$HOME/.local/bin
+
+export PATH=$PATH:$HOME/.arkade/bin/

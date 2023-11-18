@@ -84,7 +84,7 @@ if [[ $? -eq 0 ]]; then
   [ ! -f `brew --prefix`/etc/bash_completion ] || . `brew --prefix`/etc/bash_completion
 fi
 
-unset PROMPT_COMMAND 
+unset PROMPT_COMMAND
 
 complete -C /usr/local/bin/bit bit
 source <(kubectl completion bash)
@@ -93,5 +93,32 @@ if [ -f $HOME/.cargo/env ]; then
   . "$HOME/.cargo/env"
 fi
 
-# Add powerline
-source /usr/share/powerline/bindings/bash/powerline.sh
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
+# powerline
+if [ -f `which powerline-daemon` ]; then
+    powerline-daemon -q
+    POWERLINE_BASH_CONTINUATION=1
+    POWERLINE_BASH_SELECT=1
+fi
+if [ -f /home/jp/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh ]; then
+    source /home/jp/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh
+fi
+
+reset_nordvpn() {
+  sudo iptables -F INPUT
+  sudo iptables -F OUTPUT
+  sudo iptables -P OUTPUT ACCEPT
+}
+
+# pnpm
+export PNPM_HOME="/home/jp/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+alias pnpx="pnpm dlx"
