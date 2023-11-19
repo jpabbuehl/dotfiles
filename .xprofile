@@ -1,0 +1,1 @@
+hash setxkbmap 2>/dev/null && setxkbmap -option caps:swapescape || echo "not esc remapping"

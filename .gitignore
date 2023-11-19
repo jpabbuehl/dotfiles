@@ -1,0 +1,14 @@
+.cfg
+Downloads/
+snap/
+.bash_completion
+.bash_history
+.npm/
+.vscode/
+Desktop/
+Documents/
+Pictures/
+dev/
+nas
+.cache/
+.python_history

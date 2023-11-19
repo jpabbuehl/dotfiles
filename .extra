@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo 'extra'
-
 if [ hash foo 2>/dev/null ]; then
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
@@ -11,6 +9,8 @@ fi
 [ -f ${HOME}/.bash.d/cht.sh ] && . ${HOME}/.bash.d/cht.sh
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-hash setxkbmap 2>/dev/null && setxkbmap -option caps:swapescape || echo "not esc remapping"
-
-export LOCALAI=http://10.42.0.111:8080
+reset_nordvpn() {
+  sudo iptables -F INPUT
+  sudo iptables -F OUTPUT
+  sudo iptables -P OUTPUT ACCEPT
+}
