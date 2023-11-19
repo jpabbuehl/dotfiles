@@ -74,3 +74,6 @@ if command -v powerline-daemon &>/dev/null; then
     POWERLINE_BASH_SELECT=1
     source_if_exists "$HOME/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh"
 fi
+
+
+setxkbmap -option caps:swapescape
