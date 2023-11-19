@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Kubernetes configurations and shortcuts
+
+# Aliases for Kubernetes commands
+alias k=kubectl  # Shortcut for 'kubectl'
+alias kn='kubectl config set-context --current --namespace'  # Shortcut for setting namespace
+
+# Enable autocompletion for 'k' alias
+complete -F __start_kubectl k
+
+# Setting Kubernetes config file
+export KUBECONFIG=~/.kube/config
+
+# Function to clean Kubernetes namespaces
+k_ns_clean() {
+  if [ -z "$1" ]; then
+    echo "Usage: k_ns_clean <namespace>"
+    return 1
+  fi
+
+  kubectl get namespace "$1" -o json \
+  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
+  | kubectl replace --raw /api/v1/namespaces/$1/finalize -f -
+}
+
+# Kubectl completion
+if type kubectl &>/dev/null; then
+  source <(kubectl completion bash)
+fi

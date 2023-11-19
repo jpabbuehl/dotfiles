@@ -1,84 +1,76 @@
 #!/bin/bash
 
-# Ensure script runs only in interactive mode
+# Only run for interactive shells
 case $- in
     *i*) ;;
     *) return;;
 esac
 
-# OS Detection
-export OS_NAME=""
-case "$OSTYPE" in
-  linux*)   OS_NAME='linux' ;;
-  darwin*)  OS_NAME='macos' ;;
-  win*)     OS_NAME='windows' ;;
-  bsd*)     OS_NAME='bsd' ;;
-  solaris*) OS_NAME='solaris' ;;
-  *)        echo "unknown OS: $OSTYPE" ;;
-esac
+# Environment Configuration
+export OS_NAME=$(uname -s | tr '[:upper:]' '[:lower:]')  # Detect OS
+
+# Checking if vim is available as an editor
+if command -v vim &>/dev/null; then
+    export EDITOR=vim    # Default text editor
+    export VISUAL=vim    # Default visual editor
+else
+    export EDITOR=nano   # Fallback to nano if vim is not available
+    export VISUAL=nano
+fi
+
+# Language and encoding settings
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8    
+export LANGUAGE=en_US.UTF-8
 
 # Shell Options
-shopt -s histappend      # Append to history file, don't overwrite
-shopt -s checkwinsize    # Update LINES and COLUMNS
-shopt -s globstar        # Match files and directories with '**'
-shopt -s nocaseglob      # Case-insensitive globbing
-shopt -s cdspell         # Autocorrect typos in path names
-shopt -s cmdhist         # Save multi-line commands as single history entry
-shopt -s dirspell 2> /dev/null # Attempt spelling correction on directory names
+# Check and set each option with error handling
+for option in histappend checkwinsize globstar nocaseglob cdspell cmdhist dirspell; do
+    shopt -s "$option" 2>/dev/null || echo "Warning: Unable to set shell option $option"
+done
 
-# Programmable Completion
-if ! shopt -oq posix; then
-  [ -f /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
-  [ -f /etc/bash_completion ] && . /etc/bash_completion
-fi
+# Command Completion Setup
+# Function to source completion files if available
+source_if_exists() {
+    [ -f "$1" ] && . "$1"
+}
+source_if_exists /usr/share/bash-completion/bash_completion
+source_if_exists /etc/bash_completion
 
-# Set up less for non-text input files
+# Set up lesspipe for non-text file viewing
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# Configure chroot environment variable
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# SSH Config Autocomplete
+# Autocomplete for known hosts in SSH config
+if [[ -e "$HOME/.ssh/config" ]]; then
+    complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 fi
 
-# SSH Config Autocomplete
-[[ -e "$HOME/.ssh/config" ]] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
+# Source External Configuration Files
+# Loop through and source each file if it exists
+for file in .bash_prompt .path .dot_bash .dot_git .dot_docker .dot_kubernetes .dot_python .dot_js .dot_others .key; do
+    if [ -f "$HOME/$file" ]; then
+        . "$HOME/$file"
+    else
+        echo "Warning: File $HOME/$file not found"
+    fi
+done
 
-# Source external files
-[ -f "$HOME/.bash_prompt" ] && . "$HOME/.bash_prompt"
-[ -f "$HOME/.path" ] && . "$HOME/.path"
-[ -f "$HOME/.bash_aliases" ] && . "$HOME/.bash_aliases"
-[ -f "$HOME/.functions" ] && . "$HOME/.functions"
-[ -f "$HOME/.dockerfunc" ] && . "$HOME/.dockerfunc"
-[ -f "$HOME/.exports" ] && . "$HOME/.exports"
-[ -f "$HOME/.extra" ] && . "$HOME/.extra"
-
-# History Configuration
+# History Management
+# Ensure command history is preserved and shared across sessions
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-# MacOS-specific configuration
-if type brew &>/dev/null; then
-  [ -f `brew --prefix`/etc/bash_completion ] && . `brew --prefix`/etc/bash_completion
-fi
-
-# Kubectl completion
-source <(kubectl completion bash)
-
-# Rust Environment
-if [ -f $HOME/.cargo/env ]; then
-  . "$HOME/.cargo/env"
+# MacOS-specific Configurations
+# Load additional bash completion if on MacOS
+if command -v brew &>/dev/null; then
+    source_if_exists "$(brew --prefix)/etc/bash_completion"
 fi
 
 # Powerline Configuration
-if type powerline-daemon &>/dev/null; then
+# Set up Powerline if available
+if command -v powerline-daemon &>/dev/null; then
     powerline-daemon -q
     POWERLINE_BASH_CONTINUATION=1
     POWERLINE_BASH_SELECT=1
-    [ -f /home/jp/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh ] && source /home/jp/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh
+    source_if_exists "$HOME/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh"
 fi
-
-# PNPM Configuration
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-alias pnpx="pnpm dlx"

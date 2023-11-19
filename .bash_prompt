@@ -2,136 +2,124 @@
 
 # Function to display Git repository status in prompt
 prompt_git() {
-  local s='';
-  local branchName='';
+  local s='' branchName=''
 
-# Check if the current directory is in a Git repository.
-  if [ "$(git rev-parse --is-inside-work-tree &>/dev/null; echo "${?}")" == '0' ]; then
+  # Check if the current directory is in a Git repository
+  if [ "$(git rev-parse --is-inside-work-tree &>/dev/null; echo "${?}")" == '0' ] && [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == 'false' ]; then
+    # Update Git index if necessary
+    [[ -O "$(git rev-parse --show-toplevel)/.git/index" ]] && git update-index --really-refresh -q &> /dev/null
 
-# check if the current directory is in .git before running git checks
-    if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == 'false' ]; then
+    # Git status checks
+    s+=$(check_uncommitted_changes)
+    s+=$(check_unstaged_changes)
+    s+=$(check_untracked_files)
+    s+=$(check_stashed_files)
 
-      if [[ -O "$(git rev-parse --show-toplevel)/.git/index" ]]; then
-        git update-index --really-refresh -q &> /dev/null;
-  fi;
+    # Get the current branch name or commit hash
+    branchName=$(get_git_branch)
 
-# Check for uncommitted changes in the index.
-  if ! git diff --quiet --ignore-submodules --cached; then
-    s+='+';
-  fi;
-
-# Check for unstaged changes.
-  if ! git diff-files --quiet --ignore-submodules --; then
-    s+='!';
-  fi;
-
-# Check for untracked files.
-  if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-    s+='?';
-  fi;
-
-# Check for stashed files.
-  if git rev-parse --verify refs/stash &>/dev/null; then
-    s+='$';
-  fi;
-
-  fi;
-
-# Get the short symbolic ref.
-# If HEAD isn’t a symbolic ref, get the short SHA for the latest commit
-# Otherwise, just give up.
-  branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
-              git rev-parse --short HEAD 2> /dev/null || \
-              echo '(unknown)')";
-
-  [ -n "${s}" ] && s=" [${s}]";
-
-  echo -e "${1}${branchName}${blue}${s}";
+    [ -n "${s}" ] && s=" [${s}]"
+    echo -e "${1}${branchName}${blue}${s}"
   else
-    return;
-  fi;
+    return
+  fi
 }
 
+# Additional git functions
+check_uncommitted_changes() { ! git diff --quiet --ignore-submodules --cached && echo '+'; }
+check_unstaged_changes() { ! git diff-files --quiet --ignore-submodules -- && echo '!'; }
+check_untracked_files() { [ -n "$(git ls-files --others --exclude-standard)" ] && echo '?'; }
+check_stashed_files() { git rev-parse --verify refs/stash &>/dev/null && echo '$'; }
+get_git_branch() { git symbolic-ref --quiet --short HEAD 2> /dev/null || git rev-parse --short HEAD 2> /dev/null || echo '(unknown)'; }
+
 # Detect if running in a cloud environment
-cloud=""
-if [[ -f /proc/cpuinfo ]] && grep -q "^flags.* hypervisor" /proc/cpuinfo && [[ ! -d "/mnt/c/Windows/" ]]; then
-cloud="☁️ "
-fi
+detect_cloud_environment() {
+  if [[ -f /proc/cpuinfo ]] && grep -q "^flags.* hypervisor" /proc/cpuinfo && [[ ! -d "/mnt/c/Windows/" ]]; then
+    cloud="☁️ "
+  else
+    cloud=""
+  fi
+}
 
 # Terminal color setup
-# Check if terminal supports colors, then set color variables
-if tput setaf 1 &> /dev/null; then
-tput sgr0; # reset colors
-bold=$(tput bold);
-reset=$(tput sgr0);
-# Solarized colors, taken from http://git.io/solarized-colors.
-black=$(tput setaf 0);
-blue=$(tput setaf 33);
-cyan=$(tput setaf 37);
-green=$(tput setaf 64);
-orange=$(tput setaf 166);
-purple=$(tput setaf 125);
-red=$(tput setaf 124);
-violet=$(tput setaf 61);
-white=$(tput setaf 15);
-yellow=$(tput setaf 136);
-else
-bold='';
-reset="\\e[0m";
-# shellcheck disable=SC2034
-black="\\e[1;30m";
-blue="\\e[1;34m";
-cyan="\\e[1;36m";
-green="\\e[1;32m";
-# shellcheck disable=SC2034
-orange="\\e[1;33m";
-# shellcheck disable=SC2034
-purple="\\e[1;35m";
-red="\\e[1;31m";
-violet="\\e[1;35m";
-white="\\e[1;37m";
-yellow="\\e[1;33m";
-fi;
+setup_terminal_colors() {
+  if tput setaf 1 &> /dev/null; then
+    tput sgr0; # reset colors
+    bold=$(tput bold);
+    reset=$(tput sgr0);
+    black=$(tput setaf 0);
+    blue=$(tput setaf 33);
+    cyan=$(tput setaf 37);
+    green=$(tput setaf 64);
+    orange=$(tput setaf 166);
+    purple=$(tput setaf 125);
+    red=$(tput setaf 124);
+    violet=$(tput setaf 61);
+    white=$(tput setaf 15);
+    yellow=$(tput setaf 136);
+  else
+    bold='';
+    reset="\\e[0m";
+    black="\\e[1;30m";
+    blue="\\e[1;34m";
+    cyan="\\e[1;36m";
+    green="\\e[1;32m";
+    orange="\\e[1;33m";
+    purple="\\e[1;35m";
+    red="\\e[1;31m";
+    violet="\\e[1;35m";
+    white="\\e[1;37m";
+    yellow="\\e[1;33m";
+  fi
+}
 
 # User and Host styling for prompt
-# Red for root user, blue for others
-[[ "${USER}" == "root" ]] && userStyle="${red}" || userStyle="${blue}"
+set_prompt_styles() {
+  [[ "${USER}" == "root" ]] && userStyle="${red}" || userStyle="${blue}"
+  [[ "${SSH_TTY}" ]] && hostStyle="${bold}${cyan}" || hostStyle="${cyan}"
+}
 
-# Cyan for SSH sessions, regular otherwise
-[[ "${SSH_TTY}" ]] && hostStyle="${bold}${cyan}" || hostStyle="${cyan}"
+# PS1 and PS2: Main and secondary prompt string setup
+setup_prompts() {
+  PS1="\\[\\033]0;\\w\\007\\]"  # Set terminal title to current directory
+  PS1+="\\[${bold}\\]\\n"       # Newline
+  PS1+="\\[${userStyle}\\]\\u"  # Username
+  PS1+="\\[${white}\\] at "
+  PS1+="\\[${hostStyle}\\]${cloud}\\h"  # Hostname
+  PS1+="\\[${white}\\] in "
+  PS1+="\\[${green}\\]\\w"              # Working directory
+  PS1+="\$(prompt_git \"${white} on ${violet}\")"  # Git details
+  PS1+="\\n"
+  PS1+="\\[${white}\\]\$ \\[${reset}\\]"  # `$` prompt and reset color
+  export PS1
 
-# PS1: Main prompt string setup
-PS1="\\[\\033]0;\\w\\007\\]"  # Set terminal title to current directory
-PS1+="\\[${bold}\\]\\n"       # Newline
-PS1+="\\[${userStyle}\\]\\u"  # Username
-PS1+="\\[${white}\\] at "
-PS1+="\\[${hostStyle}\\]${cloud}\\h"  # Hostname
-PS1+="\\[${white}\\] in "
-PS1+="\\[${green}\\]\\w"              # Working directory
-PS1+="\$(prompt_git \"${white} on ${violet}\")"  # Git details
-PS1+="\\n"
-PS1+="\\[${white}\\]\$ \\[${reset}\\]"  # `$` prompt and reset color
-export PS1
+  PS2="\\[${yellow}\\]→ \\[${reset}\\]"
+  export PS2
+}
 
-# PS2: Secondary prompt string setup
-PS2="\\[${yellow}\\]→ \\[${reset}\\]"
-export PS2
+# Check terminal color support
+check_terminal_color_support() {
+  case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes ;;
+    *) color_prompt=no ;;
+  esac
+}
 
+# Configure terminal title for specific terminals
+configure_terminal_title() {
+  case "$TERM" in
+    xterm*|rxvt*)
+      PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+      ;;
+    *)
+      ;;
+  esac
+}
 
-# Terminal color support check for xterm
-case "$TERM" in
-  xterm-color|*-256color) 
-    color_prompt=yes
-    ;;
-  *)
-    ;;
-esac
-
-# Terminal title configuration for xterm and rxvt
-case "$TERM" in
-  xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-  *)
-    ;;
-esac
+# Invoke the functions
+detect_cloud_environment
+setup_terminal_colors
+set_prompt_styles
+setup_prompts
+check_terminal_color_support
+configure_terminal_title

@@ -12,3 +12,10 @@ dev/
 nas
 .cache/
 .python_history
+.aws
+.local
+.key
+.config/
+.arkade/
+.cubestore
+.docker

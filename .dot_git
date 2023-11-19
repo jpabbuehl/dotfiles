@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Git alias for convenience
+alias g='git'
+
+# Enable tab completion for `g` as an alias for `git`
+if type __git_complete &> /dev/null; then
+    __git_complete g __git_main
+fi
+
+# Additional Git aliases
+alias gs='git status'  # Shortcut for 'git status'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # Alias for managing dotfiles with Git
+alias cs='config status'  # Shortcut for checking status of dotfiles
+
+# Enable git branch name completion if the completion script is present
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+# Use Git’s colored diff when available
+if hash git &>/dev/null; then
+	diff() {
+		git diff --no-index --color-words "$@"
+	}
+fi
+
+# Function to create short URLs using git.io
+gitio() {
+	if [ -z "${1}" ] || [ -z "${2}" ]; then
+		echo "Usage: \`gitio slug url\`"
+		return 1
+	fi
+	curl -i https://git.io/ -F "url=${2}" -F "code=${1}"
+}

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Docker BuildKit environment setup
+export COMPOSE_DOCKER_CLI_BUILD=1
+export BUILDKIT=1
+
+# Function to clean up Docker resources
+docker_cleanup(){
+    # Remove unused containers
+    local containers
+    mapfile -t containers < <(docker ps -aq 2>/dev/null)
+    docker rm "${containers[@]}" 2>/dev/null
+
+    # Remove volumes of exited containers
+    local volumes
+    mapfile -t volumes < <(docker ps --filter status=exited -q 2>/dev/null)
+    docker rm -v "${volumes[@]}" 2>/dev/null
+
+    # Remove dangling images
+    local images
+    mapfile -t images < <(docker images --filter dangling=true -q 2>/dev/null)
+    docker rmi "${images[@]}" 2>/dev/null
+}
+
+# Extend the cleanup function to include additional resources
+docker_cleanup_everything(){
+    docker_cleanup
+
+    # Remove all images
+    docker rmi -f $(docker images -q)
+
+    # Remove all unused volumes
+    docker volume rm -f $(docker volume ls -qf dangling=true)
+
+    # Remove all unused networks
+    docker network prune -f
+}
+
+# Function to forcefully remove Docker containers
+docker_remove_containers_forcefully(){
+    docker rm -f "$@" 2>/dev/null || true
+}
+
+# Function to check and start dependencies
+docker_start_dependencies(){
+    for container in "$@"; do
+        local state
+        state=$(docker inspect --format "{{.State.Running}}" "$container" 2>/dev/null)
+
+        if [[ "$state" == "false" ]] || [[ "$state" == "" ]]; then
+            echo "$container is not running, starting it for you."
+            docker start "$container"
+        fi
+    done
+}
+
+# Docker Compose aliases
+alias docker_compose_down='docker-compose down'
+alias docker_compose_up='docker-compose up'
+
+# Aliases for cleaning Docker resources
+alias docker_clean='docker_cleanup'
+alias docker_clean_everything='docker_cleanup_everything'
+
+# Alias for listing Docker containers
+alias docker_container_list='docker container ls'

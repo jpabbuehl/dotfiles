@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Utility functions and other configurations
+
+# Function to find paths in JSON using jq
+jq_find() {
+  jq -c 'paths | select(.[-1] == "'"$1"'")'
+}
+export DOMAIN='homelab.com'
+
+# Rust Environment setup
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi
+
+# Initialize completion for timoni if available
+if command -v timoni &>/dev/null; then
+  . <(timoni completion bash)
+fi
+
+# Add Arkade binaries to PATH
+if [[ -d "$HOME/.arkade/bin" ]]; then
+  export PATH="$HOME/.arkade/bin:$PATH"
+fi
+
+# Source autojump if available
+if [ -f /usr/share/autojump/autojump.sh ]; then
+  . /usr/share/autojump/autojump.sh
+fi
+
+# Function to reset NordVPN iptables rules
+reset_nordvpn() {
+  sudo iptables -F INPUT
+  sudo iptables -F OUTPUT
+  sudo iptables -P OUTPUT ACCEPT
+}

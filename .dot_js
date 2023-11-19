@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# PNPM (JavaScript package manager) configuration
+
+# Set PNPM home directory
+export PNPM_HOME="$HOME/.local/share/pnpm"
+
+# Add PNPM_HOME to PATH if it's not already there
+if [[ ":$PATH:" != *":$PNPM_HOME:"* ]]; then
+  export PATH="$PNPM_HOME:$PATH"
+fi
+
+# Alias for PNPM dlx
+alias pnpx="pnpm dlx"
