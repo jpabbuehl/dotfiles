@@ -48,7 +48,7 @@ fi
 
 # Source External Configuration Files
 # Loop through and source each file if it exists
-for file in .bash_prompt .path .dot_bash .dot_git .dot_docker .dot_kubernetes .dot_python .dot_js .dot_others .key; do
+for file in .bash_prompt .path .dot_bash .dot_git .dot_docker .dot_kubernetes .dot_python .dot_js .dot_others; do
     if [ -f "$HOME/$file" ]; then
         . "$HOME/$file"
     else

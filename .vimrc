@@ -47,7 +47,7 @@ set wildchar=<TAB>
 " Ignore case in command line expansion for usability
 set wildignorecase
 " Exclude certain files and directories from command line expansion
-set wildignore               
+set wildignore+=*.o,*~,*.pyc,*.swp,*.zip,*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/node_modules/*,*/bower_components/*
 
 " ============================================================
 " UI Configurations
