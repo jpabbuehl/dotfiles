@@ -10,7 +10,7 @@ alias kn='kubectl config set-context --current --namespace'  # Shortcut for sett
 complete -F __start_kubectl k
 
 # Setting Kubernetes config file
-export KUBECONFIG=~/.kube/config
+export KUBECONFIG=~/.kube/config:~/.kube/config_homelab
 
 # Function to clean Kubernetes namespaces
 k_ns_clean() {

@@ -48,7 +48,7 @@ fi
 
 # Source External Configuration Files
 # Loop through and source each file if it exists
-for file in .bash_prompt .path .dot_bash .dot_git .dot_docker .dot_kubernetes .dot_python .dot_js .dot_others; do
+for file in .bash_prompt .path .dot_bash .dot_git .dot_docker .dot_kubernetes .dot_python .dot_js .dot_key .dot_others; do
     if [ -f "$HOME/$file" ]; then
         . "$HOME/$file"
     else
@@ -59,6 +59,13 @@ done
 # History Management
 # Ensure command history is preserved and shared across sessions
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Define a dummy function for __vsc_prompt_cmd_original if it doesn't exist
+if [[ $(type -t "__vsc_prompt_cmd_original") != function ]]; then
+    function __vsc_prompt_cmd_original() {
+        return 0
+    }
+fi
 
 # MacOS-specific Configurations
 # Load additional bash completion if on MacOS
@@ -75,5 +82,22 @@ if command -v powerline-daemon &>/dev/null; then
     source_if_exists "$HOME/.local/lib/python3.10/site-packages/powerline/bindings/bash/powerline.sh"
 fi
 
+eval "$(starship init bash)"
 
-setxkbmap -option caps:swapescape
+
+# pnpm
+export PNPM_HOME="/home/ubuntu/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+export PATH="/usr/local/bin:$PATH"export PATH=$PATH:$HOME/minio-binaries/
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+source <(argocd completion bash)

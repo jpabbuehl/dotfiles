@@ -1,22 +1,3 @@
 #!/bin/bash
 
-# Python environment setup
 
-# Set PYENV_ROOT
-export PYENV_ROOT="$HOME/.pyenv"
-
-# Add pyenv paths to PATH if they exist
-[[ -d "$PYENV_ROOT/shims" ]] && export PATH="$PYENV_ROOT/shims:$PATH"
-[[ -d "$PYENV_ROOT/bin" ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-
-# Initialize pyenv if it exists
-if command -v pyenv &>/dev/null; then
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
-fi
-
-# Add Poetry to PATH if it exists
-if [[ -d "$HOME/.poetry/bin" ]]; then
-  export PATH="$HOME/.poetry/bin:$PATH"
-fi

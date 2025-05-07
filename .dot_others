@@ -34,3 +34,6 @@ reset_nordvpn() {
   sudo iptables -F OUTPUT
   sudo iptables -P OUTPUT ACCEPT
 }
+
+export GOBIN=$HOME/go/bin
+export PATH=$PATH:$HOME/go/bin
